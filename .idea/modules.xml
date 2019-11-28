@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/p-structure.iml" filepath="$PROJECT_DIR$/.idea/p-structure.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pEurekaServer/pEurekaServer.iml" filepath="$PROJECT_DIR$/pEurekaServer/pEurekaServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pProject/pProject.iml" filepath="$PROJECT_DIR$/pProject/pProject.iml" />
+    </modules>
+  </component>
+</project>
