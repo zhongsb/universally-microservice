@@ -1,67 +1,93 @@
+###################  容器相关设置  ###################
 server:
-  #配置访问的端口
-  prot: 8082　　
+  #发布端口
+  port: 8764
+  tomcat:
+    uri-encoding: UTF-8
+    # 如果是采用WAR包的方式部署，请修改容器对应的配置项，如Tomcat，见以下 max-http-header-size 项注释
+    max-http-post-size: 8MB
   servlet:
-    #配置访问时的项目名
-    context-path: /pproject　　
+    context-path: /koms-is
+  # 如果是采用WAR包的方式部署，请修改容器对应的配置项
+  # 如Tomcat：
+  #  <Connector port="8080" protocol="HTTP/1.1"
+  #  connectionTimeout="20000"
+  #  redirectPort="8443" maxHttpHeaderSize="65536" maxPostSize="4194304"
+  #  URIEncoding="UTF-8"/>
+  max-http-header-size: 32KB
 
+###################  注册服务配置  ###################
 eureka:
   instance:
-    hostname: localhost
-    # 表示eureka client间隔多久去拉取服务注册信息，默认为30秒，如果要迅速获取服务注册状态，可以缩小该值
-    lease-renewal-interval-in-seconds: 5
-    # 表示eureka server至上一次收到client的心跳之后，等待下一次心跳的超时时间，在这个时间内若没收到下一次心跳，则将移除该instance。
-    # 默认为90秒
-    # 如果该值太大，则很可能将流量转发过去的时候，该instance已经不存活了。
-    # 如果该值设置太小了，则instance则很可能因为临时的网络抖动而被摘除掉。
-    # 该值至少应该大于 leaseRenewalIntervalInSeconds
-    lease-expiration-duration-in-seconds: 10
+    health-check-url-path: ${server.servlet.context-path}/health
+    status-page-url-path: ${server.servlet.context-path}/login
   client:
     serviceUrl:
+      #注册服务地址
       defaultZone: http://localhost:8081/eureka/
 
+###################  spring配置  ###################
 spring:
-  devtools:
-    restart:
-      #这个好像是热加载，每次代码有改动就自动重启，原来的restart ClassLoader 被丢弃，重新创建一个restart ClassLoader，
-      # 由于需要加载的类相比较少，所以实现了较快的重启时间。
-      enabled: true　　
-
-
-    jackson:
-      date-format: yyyy-MM-dd HH:mm:ss
-      time-zone: GMT+8
-  application:
-    name: pproject
+  ###环境配置，目前可选值为prod和dev，生产环境需配置为prod
   profiles:
     active: dev
+  application:
+    #注册服务名称
+    name: komsis
+  http:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+  messages:
+    encoding: UTF-8
+  mvc:
+    view:
+      prefix: /templates
+      suffix: .html
 
 
+management:
+  security:
+    enabled: false
+  health:
+    redis:
+      enabled: false
+    elasticsearch:
+      enabled: false
+  #    rabbit:
+  #      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
+
+###################  mybatis-plus配置  ###################
 mybatis-plus:
-  mapper-locations: classpath*:mapper/**/*Mapper.xml
-  #实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: com.prepared.entity.*
+  mapper-locations: classpath*:com/prepared/pProject/mapper/*.xml
+  typeAliasesPackage: com.prepared.pProject.entity
   global-config:
-    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    ###0:数据库ID自增   1:用户输入id  2:全局唯一id(IdWorker)  3:全局唯一ID(uuid)
     id-type: 0
-    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-    field-strategy: 2
-    #驼峰下划线转换
     db-column-underline: false
-    #刷新mapper 调试神器
     refresh-mapper: true
-    #数据库大写下划线转换
-    #capital-mode: true
-    # Sequence序列接口实现类配置
-    #key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator
-    #逻辑删除配置
-    logic-delete-value: 1
-    logic-not-delete-value: 0
-    #自定义填充策略接口实现
-    #meta-object-handler: com.baomidou.springboot.xxx
-    #自定义SQL注入器
-    # sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    ###Oracle主键生成器
+    key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator
   configuration:
     map-underscore-to-camel-case: true
-    cache-enabled: false
-    call-setters-on-nulls: true
+    ###配置的缓存的全局开关（true/false）
+    cache-enabled: true
+    ###延时加载的开关（true/false）
+    lazyLoadingEnabled: true
+    ###开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性（true/false）
+    multipleResultSetsEnabled: true
+    ###打印sql语句,调试用
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+###################  属性加密配置  ###################
+jasypt:
+  encryptor:
+    property:
+      prefix: "ENC@["
+      suffix: "]"
+

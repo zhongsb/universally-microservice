@@ -5,3 +5,5 @@ springboot 微服务架构，注册中心使用eureka
 1. 整合redis
 2. 整合elasticsearch
 3. 多数据源
+
+注册中心可以选择erueka、consul、zookeeper

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prepared.pProject.mapper.SysDepartmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.prepared.pProject.entity.SysDepartment">
+        <id column="JGID" property="jgid"/>
+        <result column="JGLX" property="jglx"/>
+        <result column="YWMS" property="ywms"/>
+        <result column="JGZN" property="jgzn"/>
+        <result column="XZJB" property="xzjb"/>
+        <result column="JGCCBM" property="jgccbm"/>
+        <result column="JGMC" property="jgmc"/>
+        <result column="JGCODE" property="jgcode"/>
+        <result column="GXSJ" property="gxsj"/>
+        <result column="COMMANDORDER" property="commandorder"/>
+        <result column="JGPARENTID" property="jgparentid"/>
+        <result column="CZDH" property="czdh"/>
+        <result column="ZBDH3" property="zbdh3"/>
+        <result column="ZBDH2" property="zbdh2"/>
+        <result column="ZBDH1" property="zbdh1"/>
+        <result column="FZRSJ" property="fzrsj"/>
+        <result column="FZRDH" property="fzrdh"/>
+        <result column="FZR" property="fzr"/>
+        <result column="QTRS" property="qtrs"/>
+        <result column="ZBZGS" property="zbzgs"/>
+        <result column="ZBMJS" property="zbmjs"/>
+        <result column="BZRS" property="bzrs"/>
+        <result column="YZBM" property="yzbm"/>
+        <result column="SCDZ" property="scdz"/>
+    </resultMap>
+
+
+    <!-- 根据部门编号查找子部门列表 -->
+    <select id="selectDepartmentWithChildren" resultMap="BaseResultMap">
+        select * from T_SYS_DEPARTMENT
+        <if test="deptId!=null and deptId!=''">
+            start with JGID=#{deptId,jdbcType=VARCHAR} connect by prior JGID = JGPARENTID
+        </if>
+    </select>
+
+</mapper>

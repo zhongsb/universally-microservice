@@ -1,25 +1,40 @@
 spring:
-    datasource:
-      #配置数据库的路径
-      url: jdbc:mysql://localhost:3306/colordb?useUnicode=true&characterEncoding=UTF-8&useSSL=true　　
-      username: root　　
-      password: 123456
-      type: com.alibaba.druid.pool.DruidDataSource  #这个可以看一下 https://blog.csdn.net/qq_27191423/article/details/79146855
-      driver-class-name: com.mysql.jdbc.Driver
-      filters: stat
-      #连接池的最大值，同一时间可以从池分配的最多连接数量，0时无限制
-      maxActive: 20　　
-      #连接初始值，连接池启动时创建的连接数量的初始值
-      initialSize: 1　　
-      maxWait: 60000
-      #最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请
-      minIdle: 1　　
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: select 'x'
-      testWhileIdle: true
-      testOnBorrow: false
-      testOnReturn: false
-      #是否对已备语句进行池管理（布尔值），是否对PreparedStatement进行缓存
-      poolPreparedStatements: true 　　
-      maxOpenPreparedStatements: 20
+  #redis 配置
+  redis:
+    # Redis数据库索引（默认为0）,如果设置为1，那么存入的key-value都存放在select 1中
+    database: 0
+    # Redis服务器地址
+    host: 10.150.16.153
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password:
+    jedis:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制）
+        max-active: 1000
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池中的最小空闲连接
+        min-idle: 1
+    # 连接超时时间（毫秒）
+    timeout: 100000ms
+
+mybatis:
+  configuration:
+    cache-enabled: true
+
+datasource:
+  sources:
+    ###第一个库
+    first:
+      url: jdbc:oracle:thin:@//10.2.25.192:1521/orcl
+      username: ehl_gs
+      password: ehl1234
+    ###第二个库
+    second:
+      url: jdbc:oracle:thin:@//10.2.25.192:1521/orcl
+      username: ehl_gs
+      password: ehl1234
